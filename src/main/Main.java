@@ -10,7 +10,13 @@ public class Main {
 		try {
 			do {
 				tk = sc.nextToken();
-				System.out.println(tk);
+				System.out.println(
+					"TYPE: " + tk.getType() +
+					" | CONTENT: " + tk.getContent() +
+					" | LINE: " + tk.getLine() +
+					" | COLUMN: " + tk.getColumn()
+				);
+
 			} while (tk != null);
 		} catch (Exception e) {
 			e.printStackTrace();
