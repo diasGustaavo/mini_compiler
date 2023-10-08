@@ -8,8 +8,6 @@ public class Token {
     private int line;
     private int column;
 
-    private Token() {}
-
     public Token(TokenType type, String content, int line, int column) {
         this.type = type;
         this.content = content;
