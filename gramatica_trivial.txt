@@ -1,0 +1,33 @@
+G = (Vn, Vt, P, S)
+
+Vn = {E, T, OP}
+Vt = {id, num, + , - , * , /}
+S = E
+P = dado pelas regras abaixo
+
+	1. E  ->   E OP T | T
+	2. T  ->  id | num
+	3. OP ->  + | - | * | /
+
+Eliminar recursividade direta à esquerda reescrevendo a regra 1
+ <A> ::= <A>alpha | beta
+ ->
+ <A>  ::= betaA'
+ <A'> ::= alphaA' | &
+ Portanto, teremos:
+ 
+ 	1.1 E  -> TE'
+ 	1.2 E' -> OP T E'| &
+ 	2.  T  ->  id | num
+	3.  OP ->  + | - | * | /
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+	

@@ -25,3 +25,4 @@ print
 if
 else
 ç
+x2 soma
