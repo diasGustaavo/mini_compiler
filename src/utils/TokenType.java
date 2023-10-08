@@ -1,8 +1,9 @@
 package utils;
 
 public enum TokenType {
-	IDENTIFIER,
+	IDENTYFIER,
 	NUMBER,
+	REL_OP,
 	SUM_OP,
 	DIV_OP,
 	MULT_OP,
@@ -19,3 +20,4 @@ public enum TokenType {
 	RESERVED_KEYWORD,
 	DELIM
 }
+
