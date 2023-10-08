@@ -1,7 +1,7 @@
 package utils;
 
 public enum TokenType {
-	IDENTYFIER,
+	IDENTIFIER,
 	NUMBER,
 	REL_OP,
 	SUM_OP,
@@ -18,6 +18,7 @@ public enum TokenType {
 	LEFT_PARENTHESIS,
 	RIGHT_PARENTHESIS,
 	RESERVED_KEYWORD,
-	DELIM
+	DELIM,
+	TWO_POINTS,
 }
 
