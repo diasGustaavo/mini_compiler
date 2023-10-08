@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import exceptions.ScannerException;
 import utils.TokenType;
 
 public class Scanner {
@@ -72,7 +73,7 @@ public class Scanner {
 							char nextChar = nextChar(); // Consuming the next '='
 							if (peekChar() == '=') {
 								nextChar();
-								throw new Exception("Unrecognized symbol \'" + currentChar + "\' at line " + line + ", column " + column);
+								throw new ScannerException("Unrecognized symbol \'" + currentChar + "\' at line " + line + ", column " + column);
 							}
 							
 							return new Token(TokenType.EQUALS,  String.valueOf(currentChar) + nextChar, line, column);
@@ -102,10 +103,14 @@ public class Scanner {
                         return new Token(TokenType.LEFT_PARENTHESIS, String.valueOf(currentChar), line, column);
                     } else if(currentChar == ')') {
 						return new Token(TokenType.RIGHT_PARENTHESIS, String.valueOf(currentChar), line, column);
-					} else if (isSpace(currentChar)) {
+					} else if(isTwoPoints(currentChar)) {
+                        return new Token(TokenType.TWO_POINTS, String.valueOf(currentChar), line, column);
+                    } else if(isDelimeter(currentChar)) {
+                        return new Token(TokenType.DELIM, String.valueOf(currentChar), line, column);
+                    } else if (isSpace(currentChar)) {
                         this.state = 0;
-                    } else {
-                        throw new Exception("Unrecognized symbol \'" + currentChar + "\' at line " + line + ", column " + column);
+                    }  else {
+                        throw new ScannerException("Unrecognized symbol \'" + currentChar + "\' at line " + line + ", column " + column);
                     }
                     break;
                 case 1:
@@ -136,7 +141,7 @@ public class Scanner {
                         content += currentChar;
                         this.state = 5;
                     } else {
-                        throw new Exception("Number Malformed: expected number after '.' received \'" + currentChar + "\' at line " + line + ", column " + column);
+                        throw new ScannerException("Number Malformed: expected number after '.' received \'" + currentChar + "\' at line " + line + ", column " + column);
                     }
                     break;
 
@@ -145,7 +150,7 @@ public class Scanner {
                         content += currentChar;
                         this.state = 5;
                     } else {
-                        throw new Exception("Number Malformed: expected number after '.' received \'" + currentChar + "\' at line " + line + ", column " + column);
+                        throw new ScannerException("Number Malformed: expected number after '.' received \'" + currentChar + "\' at line " + line + ", column " + column);
                     }
                     break;
 
@@ -158,6 +163,7 @@ public class Scanner {
                         return new Token(TokenType.NUMBER, content, line, column);
                     }
                     break;
+
                 default:
                     break;
             }
@@ -200,6 +206,14 @@ public class Scanner {
 
     private boolean isOperator(char currentChar) {
         return currentChar == '+' || currentChar == '-' || currentChar == '*' || currentChar == '/';
+    }
+
+    private boolean isTwoPoints(char currentChar) {
+        return currentChar == ':';
+    }
+
+    private boolean isDelimeter(char currentChar) {
+        return currentChar == ';';
     }
 
 	private TokenType getOperator(char currentChar) {

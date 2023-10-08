@@ -1,6 +1,6 @@
 x2 soma SUBTRACAO
 a b c
-10 12 01 93.7 101.1
+10 12 01 93.7 101.1 .2
 variableName
 myIdentifier
 a1b2c3
@@ -25,3 +25,4 @@ print
 if
 else
 ç
+x2 soma

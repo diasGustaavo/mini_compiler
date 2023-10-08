@@ -1,76 +1,72 @@
 programa : 
-	':' 'DECLARACOES' listaDeclaracoes
-	':' 'ALGORITMO' listaComandos ;
+	':' 'DECLARACOES' listaDeclaracoes ':' 'ALGORITMO' listaComandos;
 
 listaDeclaracoes : 
-	declaracao ';' listaDeclaracoes2;
-listaDeclaracoes2 : 
-	VAZIO | listaDeclaracoes;
+	declaracao listaDeclaracoes | 
+	declaracao;
 
 declaracao : 
-	VARIAVEL ':' tipoVar ;
+	VARIAVEL ':' tipoVar;
 
 tipoVar : 
-	'INTEIRO' | 'REAL';
+	'INTEIRO' | 
+	'REAL';
 
-expressaoAritmetica:
-    termoAritmetico expressaoAritmetica2
-expressaoAritmetica2:
-    expressaoAritmetica3 expressaoAritmetica2 |
-    VAZIO
-expressaoAritmetica3:
-    '+' termoAritmetico |
-    '-' termoAritmetico 
+expressaoAritmetica : 
+	expressaoAritmetica '+' termoAritmetico | 
+	expressaoAritmetica '-' termoAritmetico | 
+	termoAritmetico;
 
 termoAritmetico : 
-	fatorAritmetico termoAritmetico2 
-termoAritmetico2 :
-	termoAritmetico3 termoaritmetico2 | VAZIO 
-termoAritmetico3 : 
-	'*' fatorAritmetico | '/' fatorAritmetico
+	termoAritmetico '*' fatorAritmetico | 
+	termoAritmetico '/' fatorAritmetico | 
+	fatorAritmetico;
 
 fatorAritmetico : 
-	NUMINT | NUMREAL | VARIAVEL |
-	'(' expressaoAritmetica ')'
+	NUMINT | 
+	NUMREAL | 
+	VARIAVEL | 
+	LEFT_PAR expressaoAritmetica RIGHT_PAR
 
 expressaoRelacional : 
-    termoRelacional expressaoRelacional2
-expressaoRelacional2 : 
-    operadorBooleano expressaoRelacional | VAZIO;
+	expressaoRelacional operadorBooleano termoRelacional | 
+	termoRelacional;
 
 termoRelacional : 
-    expressaoAritmetica operadorRelacional expressaoAritmetica |
-    '(' expressaoRelacional ')';
+	expressaoAritmetica OP_REL expressaoAritmetica | 
+	LEFT_PAR expressaoRelacional RIGHT_PAR;
 
 operadorBooleano : 
-    'AND' | 'OR';
+	'E' | 
+	'OU';
 
 listaComandos : 
-    comando ';'  listaComandos2 ;
-listaComandos2 :
-    listaComandos | VAZIO;
+	comando listaComandos | 
+	comando;
 
 comando : 
-    comandoAtribuicao | 
-    comandoEntrada |
-    comandoSaida | 
-    comandoCondicao | 
-    comandoRepeticao;
+	comandoAtribuicao | 
+	comandoEntrada | 
+	comandoSaida | 
+	comandoCondicao | 
+	comandoRepeticao | 
+	subAlgoritmo;
 
 comandoAtribuicao : 
-    'ASSIGN' expressaoAritmetica 'TO' VARIAVEL;
+	'VARIAVEL' = expressaoAritmetica;
 
 comandoEntrada : 
-    'INPUT' VARIAVEL;
+	'LER' VARIAVEL;
 
 comandoSaida : 
-    'PRINT'  (VARIAVEL | CADEIA);
+	'IMPRIMIR' LEFT_PAR (VARIAVEL | CADEIA) RIGHT_PAR;
 
 comandoCondicao : 
-    'IF' expressaoRelacional 'THEN' comando comandoCondicao2;
-comandoCondicao2 : 
-   comando comandoCondicao2 |  'ELSE' comandoCondicao2 | VAZIO;
+	'SE' expressaoRelacional 'ENTAO' comando | 
+	'SE' expressaoRelacional 'ENTAO' comando 'SENAO' comando;
 
 comandoRepeticao : 
-    'WHILE' expressaoRelacional comando comandoRepeticao2;
-comandoRepeticao2: comando comandoRepeticao2 | vazio
+	'ENQUANTO' expressaoRelacional comando;
+
+subAlgoritmo : 
+	'INICIO' listaComandos 'FIM';
