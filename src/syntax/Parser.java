@@ -51,12 +51,18 @@ public class Parser {
 
 		match(this.token, TokenType.TWO_POINTS);
 		this.toNextToken();
+        System.out.println("erro depois daqui");
 		match(this.token, Keywords.ALGORITHM);
+        System.out.println("erro depois daqui 2");
 
+        this.toNextToken();
 		listaComandos();
+        System.out.println("erro depois daqui 3");
 
 		this.toNextToken();
+        System.out.println("erro depois daqui 4");
 		match(this.token, TokenType.DELIM);
+        System.out.println("erro depois daqui 5");
 	}
 
 	public void listaDeclaracoes() throws Exception {
@@ -97,17 +103,17 @@ public class Parser {
 	}
 
     public void comando() throws Exception {
-        if (token.getType().toString().intern() == "IDENTIFIER") {
+        if (token.getType().toString().intern().equals("IDENTIFIER")) {
 			comandoAtribuicao();
-		} else if (token.getContent().intern() == Keywords.INPUT.toString().intern()) {
+		} else if (token.getContent().intern().equals(Keywords.INPUT.toString().intern())) {
             comandoEntrada();
-        } else if (token.getContent().intern() == Keywords.PRINT.toString().intern()) {
+        } else if (token.getContent().intern().equals(Keywords.PRINT.toString().intern())) {
             comandoSaida();
-        } else if (token.getContent().intern() == Keywords.IF.toString().intern()) {
+        } else if (token.getContent().intern().equals(Keywords.IF.toString().intern())) {
             comandoCondicao();
-        } else if (token.getContent().intern() == Keywords.WHILE.toString().intern()) {
+        } else if (token.getContent().intern().equals(Keywords.WHILE.toString().intern())) {
             comandoRepeticao();
-        } else if (token.getContent().intern() == Keywords.BEGIN.toString().intern()) {
+        } else if (token.getContent().intern().equals(Keywords.BEGIN.toString().intern())) {
             subAlgoritmo();
         } else {
             throw new ParserException("Expected ASSING, INPUT, PRINT, IF or WHILE and found " + token.getContent() + ": " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");
@@ -126,6 +132,7 @@ public class Parser {
         match(this.token, Keywords.INPUT);
 		this.toNextToken();
 		match(this.token, TokenType.IDENTIFIER);
+        this.toNextToken();
 	}
 
     public void comandoSaida() throws Exception {
@@ -147,7 +154,7 @@ public class Parser {
     public void comandoCondicao() throws Exception {
         match(this.token, Keywords.IF);
         this.toNextToken();
-		// expressaoRelacional(null);
+        expressaoRelacional();
 		this.toNextToken();
 		match(this.token, Keywords.THEN);
         this.toNextToken();
@@ -157,6 +164,10 @@ public class Parser {
         if (this.token.getContent().toString().intern() == Keywords.ELSE.toString().intern()) {
             comando();
         }
+    }
+
+    private void expressaoRelacional() {
+        // implementar
     }
 
     public void comandoRepeticao() throws Exception {
@@ -210,153 +221,4 @@ public class Parser {
     public void termoAritmetico() {
 
     }
-
-    // public void expressaoAritmetica2() throws Exception {
-    //     this.toNextToken();
-    //     if (this.token != null && (this.token.getType() == TokenType.SUM_OP || this.token.getType() == TokenType.SUB_OP)) {
-    //         expressaoAritmetica3();
-    //         expressaoAritmetica2();
-    //     } 
-	// }
-
-    // public void expressaoAritmetica3() throws Exception {
-    //     if (this.token.getType() == TokenType.SUM_OP) {
-    //         match(this.token, TokenType.SUM_OP);
-    //         this.toNextToken();
-    //         termoAritmetico();
-    //         return;
-    //     }
-
-    //     match(this.token, TokenType.SUB_OP);
-    //     this.toNextToken();
-    //     termoAritmetico();
-	// }
-
-	// public void expressaoRelacional(Token token) throws Exception {
-    //     termoRelacional(token);
-    //     expressaoRelacional2();
-    //     match(this.token, TokenType.DELIM);
-	// }
-
-    // public void expressaoRelacional2() throws Exception {
-    //     this.toNextToken();
-    //     if (this.token != null && this.token.getType() != TokenType.DELIM && (this.token.getContent().intern() == Keywords.AND.toString().intern() || this.token.getContent().intern() == Keywords.OR.toString())) {
-    //         operadorBooleano();
-    //         expressaoRelacional(token);
-    //     }
-    // }
-
-    // public void termoRelacional(Token tokenprop) throws Exception {
-    //     if (tokenprop == null) {
-    //         this.toNextToken();
-    //     }
-
-    //     if (this.token.getType() == TokenType.LEFT_PARENTHESIS) {
-    //         match(this.token, TokenType.LEFT_PARENTHESIS);
-    //         this.toNextToken();
-    //         expressaoRelacional(token);
-    //         this.toNextToken();
-    //         match(this.token, TokenType.RIGHT_PARENTHESIS);
-    //         return;
-    //     }
-
-    //     expressaoAritmetica();
-    //     operadorRelacional();
-
-    //     this.toNextToken();
-    //     expressaoAritmetica();
-    // }
-
-    // public void operadorRelacional() throws Exception {
-    //     rel_op();
-    // }
-
-    // private void rel_op() throws Exception {
-    //     this.toNextToken();
-    //     TokenType type = this.token.getType();
-    //     if (type != TokenType.LESS && type != TokenType.LESS_EQUALS && type != TokenType.EQUALS && type != TokenType.GREATER && type != TokenType.GREATER_EQUALS && type != TokenType.DIF_OP) {
-    //         throw new ParserException("Type REL_OP expected, found " + token.getType() + ": " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");
-    //     }
-    // }
-
-    // public void operadorBooleano() throws Exception {
-    //     if(
-    //         this.token.getContent().intern() != Keywords.AND.toString().intern() 
-    //         && this.token.getContent().intern() != Keywords.OR.toString()
-    //     ) {
-    //         throw new ParserException("Expected AND or OR and found " + token.getContent() + ": " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");  
-    //     }
-    // }
-
-    // public void termoAritmetico () throws Exception {
-    //     fatorAritmetico();
-    //     termoAritmetico2();
-    //     match(this.token, TokenType.DELIM);
-    // }
-
-    // public void termoAritmetico2 () throws Exception {
-    //     this.toNextToken();
-    //     if (this.token != null && (this.token.getType() == TokenType.MULT_OP || this.token.getType() == TokenType.DIV_OP)) {
-    //         termoAritmetico3();
-    //         termoAritmetico2();
-    //     }
-
-    // }
-
-    // public void termoAritmetico3 () throws Exception {
-    //     if (this.token.getType() == TokenType.MULT_OP) {
-    //         match(this.token, TokenType.MULT_OP);
-    //         this.toNextToken();
-    //         fatorAritmetico();
-    //         return;
-    //     }
-
-    //     match(this.token, TokenType.DIV_OP);
-    //     this.toNextToken();
-    //     fatorAritmetico();
-    // }
-
-    // public void fatorAritmetico() throws Exception {
-    //     if (
-    //         this.token.getType() != TokenType.NUMBER &&
-    //         this.token.getType() != TokenType.IDENTIFIER
-    //     ) {
-    //         if (this.token.getType() != TokenType.LEFT_PARENTHESIS) {
-    //             throw new ParserException("Expected INT, FLOAT, IDENTIFIER or (EXPRESSION) and found " + token.getContent() + ": " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");  
-    //         }
-
-    //         match(this.token, TokenType.LEFT_PARENTHESIS);
-    //         this.toNextToken();
-    //         expressaoAritmetica();
-    //         this.toNextToken();
-    //         match(this.token, TokenType.RIGHT_PARENTHESIS);
-    //     }
-    // } 
-
-	/* 
-    public void match(Token token, TokenType type) {
-        System.out.println("TOKEN: " + token.getContent() + "   " + "TYPE: " + type.toString().intern());
-        if (this.token != null) {
-            if (this.token.getType() != type) {
-                throw new ParserException("Type " + type + " expected, found " + token.getType() + " with value: " +  token.getContent().intern() + " : " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");
-            }
-
-			return;
-        }
-
-        throw new ParserException("Type " + type + " expected, found null"  + ": " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");
-    }
-
-	public void match(Token token, Keywords keyword) {
-        System.out.println("TOKEN: " + token.getContent() + "   " + "KEYWORD: " + keyword.toString().intern());
-		if (this.token != null) {
-			if (this.token.getContent().intern() != keyword.toString().intern()) {
-				throw new ParserException("Keywords " + keyword + " expected, found " + token.getType() + " with value: " +  token.getContent().intern() + " : " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");
-			}
-
-			return;
-		}
-
-		throw new ParserException("Keywords " + keyword + " expected, found null"  + ": " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");
-	} */
 }
