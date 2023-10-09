@@ -125,7 +125,7 @@ public class Parser {
 		this.toNextToken();
 		match(this.token, TokenType.ASSIGN);
 		this.toNextToken();
-		// expressaoAritmetica();
+		expressaoAritmetica();
 	}
 
     public void comandoEntrada() throws Exception {
@@ -152,6 +152,7 @@ public class Parser {
 	}
 
     public void comandoCondicao() throws Exception {
+        System.out.println("ENTROU no COMANDO CONDICAO");
         match(this.token, Keywords.IF);
         this.toNextToken();
         expressaoRelacional();
@@ -166,19 +167,66 @@ public class Parser {
         }
     }
 
-    private void expressaoRelacional() {
-        // implementar
+    private void expressaoRelacional() throws Exception {
+         System.out.println("ENTROU no expressaoRelacional");
+        termoRelacional();
+        expressaoRelacional_2();
+    }
+
+    private void expressaoRelacional_2() throws Exception {
+        if (this.token.getContent().intern() != Keywords.THEN.toString().intern()) {
+            operadorBooleano();
+            expressaoRelacional();
+        }
+    }
+
+    private void operadorBooleano() {
+        if (
+            this.token.getContent().toString().intern() != Keywords.AND.toString().intern()
+            && this.token.getContent().toString().intern() != Keywords.OR.toString().intern()
+        ) {
+            throw new ParserException("Expected AND or OR operator and found " + token.getContent() + ": " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");
+        }
+    }
+
+    private void termoRelacional() throws Exception {
+        System.out.println("ENTROU no termoRelacional");
+        if (this.token.getType().toString().intern() == TokenType.LEFT_PARENTHESIS.toString().intern()) {
+            match(this.token, TokenType.LEFT_PARENTHESIS);
+            expressaoRelacional();
+            match(this.token, TokenType.RIGHT_PARENTHESIS);
+
+            return;
+        }
+
+        expressaoAritmetica();
+        op_rel();
+        expressaoAritmetica();
+    }
+
+    private void op_rel() throws Exception {
+         System.out.println("ENTROU no op_rel");
+        this.toNextToken();
+
+        TokenType type = this.token.getType();
+        if (type != TokenType.LESS && type != TokenType.LESS_EQUALS && type != TokenType.EQUALS && type != TokenType.GREATER && type != TokenType.GREATER_EQUALS && type != TokenType.DIF_OP) {
+            throw new ParserException("Type REL_OP expected, found " + token.getType() + " with value: " + token.getContent());
+        }
+
+        this.toNextToken();
     }
 
     public void comandoRepeticao() throws Exception {
+        System.out.println("ENTROU no comandoRepeticao");
         match(this.token, Keywords.WHILE);
         this.toNextToken();
-		// expressaoRelacional(null);
+		expressaoRelacional();
         this.toNextToken();
 		comando();
 	}
 
     public void subAlgoritmo() throws Exception {
+        System.out.println("ENTROU no subAlgoritmo");
         match(this.token, Keywords.BEGIN);
         this.toNextToken();
         this.listaComandos();
@@ -186,39 +234,73 @@ public class Parser {
         match(this.token, Keywords.END);
     }
 
-
 	public void expressaoAritmetica() throws Exception {
+         System.out.println("ENTROU no expressaoAritmetica");
         termoAritmetico();
         expressaoAritmetica_2();
-        expressaoAritmetica_3();
-        match(this.token, TokenType.DELIM);
 	}
 
     public void expressaoAritmetica_2() throws Exception {
-        match(this.token, TokenType.SUM_OP);
-        this.toNextToken();
-        termoAritmetico();
-        this.toNextToken();
-
-        if (this.token != null && this.token.getType().toString().intern() != TokenType.DELIM.toString().intern()) {
+         System.out.println("ENTROU no expressaoAritmetica_2");
+        if (this.token != null && (this.token.getType() == TokenType.SUM_OP || this.token.getType() == TokenType.SUB_OP)) {
+            expressaoAritmetica_3();
             expressaoAritmetica_2();
         }
     }
 
     public void expressaoAritmetica_3() throws Exception {
-        match(this.token, TokenType.SUB_OP);
-        this.toNextToken();
-        termoAritmetico();
-        this.toNextToken();
-        expressaoAritmetica_2();
-        this.toNextToken();
+         System.out.println("ENTROU no expressaoAritmetica_3");
+        if (
+            this.token.getType().toString().intern() != TokenType.SUB_OP.toString().intern()
+            && this.token.getType().toString().intern() != TokenType.SUM_OP.toString().intern()
+        ) {
+            throw new ParserException("Expected SUM or SUB operation and found " + token.getContent() + ": " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");
+        }
 
-        if (this.token != null && this.token.getType().toString().intern() != TokenType.DELIM.toString().intern()) {
-            expressaoAritmetica_3();
+        termoAritmetico();
+    }
+
+    public void termoAritmetico() throws Exception {
+        System.out.println("ENTROU no termoAritmetico");
+        fatorAritmetico();
+        termoAritmetico_2();
+    }
+
+    public void termoAritmetico_2() throws Exception {
+        System.out.println("ENTROU no termoAritmetico_2");
+        if (this.token != null && (this.token.getType() == TokenType.MULT_OP || this.token.getType() == TokenType.DIV_OP)) {
+            termoAritmetico_3();
+            termoAritmetico_2();
         }
     }
 
-    public void termoAritmetico() {
+    public void termoAritmetico_3() throws Exception {
+        System.out.println("ENTROU no termoAritmetico_3");
+        if (
+            this.token.getType().toString().intern() != TokenType.MULT_OP.toString().intern()
+            && this.token.getType().toString().intern() != TokenType.DIV_OP.toString().intern()
+        ) {
+            throw new ParserException("Expected MULT or DIV operation and found " + token.getContent() + ": " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");
+        }
 
+        fatorAritmetico();
+    }
+
+    public void fatorAritmetico() throws Exception {
+        System.out.println("ENTROU no fatorAritmetico");
+        if (this.token.getType().toString().intern() == TokenType.LEFT_PARENTHESIS.toString().intern()) {
+            match(this.token, TokenType.LEFT_PARENTHESIS);
+            expressaoAritmetica();
+            match(this.token, TokenType.RIGHT_PARENTHESIS);
+
+            return;
+        }
+
+        if (
+            this.token.getType().toString().intern() != TokenType.IDENTIFIER.toString().intern()
+            && this.token.getType().toString().intern() != TokenType.NUMBER.toString().intern()
+        ) {
+            throw new ParserException("Expected Identifier or Number and found " + token.getContent() + ": " + "[line:" + this.token.getLine()  + " ] [column:"+ this.token.getColumn() + "]");
+        }
     }
 }
