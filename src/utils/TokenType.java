@@ -20,5 +20,6 @@ public enum TokenType {
 	RESERVED_KEYWORD,
 	DELIM,
 	TWO_POINTS,
+	STRING,
 }
 

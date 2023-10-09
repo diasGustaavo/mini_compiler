@@ -67,7 +67,7 @@ public class Scanner {
 
             switch (state) {
                 case 0:
-                    if (isLetter(currentChar)) {
+                    if (isLetter(currentChar) || isUnderline(currentChar)) {
                         content += currentChar;
                         this.state = 1;
                     } else if (isDigit(currentChar) || currentChar == '.') {
@@ -117,7 +117,10 @@ public class Scanner {
                         return new Token(TokenType.DELIM, String.valueOf(currentChar), line, column);
                     } else if (isSpace(currentChar)) {
                         this.state = 0;
-                    }  else {
+                    }  else if(isDoubleQuotes(currentChar)) {
+                        content += currentChar;
+                        this.state = 6;
+                    } else {
                         throw new ScannerException("Unrecognized symbol \'" + currentChar + "\' at line " + line + ", column " + column);
                     }
                     break;
@@ -172,6 +175,14 @@ public class Scanner {
                     }
                     break;
 
+                
+                case 6:
+                    if (isDoubleQuotes(currentChar)) {
+                        content += currentChar;
+                        return new Token(TokenType.STRING, content, line, column);
+                    } else {
+                        content += currentChar;
+                    }
                 default:
                     break;
             }
@@ -238,5 +249,13 @@ public class Scanner {
 
     private boolean isLetter(char currentChar) {
         return (currentChar >= 'a' && currentChar <= 'z') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_';
+    }
+
+    private boolean isDoubleQuotes(char currentChar) {
+        return currentChar == '"';
+    }
+
+    private boolean isUnderline(char currentChar) {
+        return currentChar == '_';
     }
 }
