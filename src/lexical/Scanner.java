@@ -51,7 +51,7 @@ public class Scanner {
         char currentChar;
         String content = "";
         this.state = 0;
-        
+
         while (true) {
             if (isEOF()) {
                 return null;
@@ -74,44 +74,44 @@ public class Scanner {
                         content += currentChar;
                         this.state = currentChar == '.' ? 4 : 2;
                     } else if (isOperator(currentChar)) {
-						TokenType operator = getOperator(currentChar);
+                        TokenType operator = getOperator(currentChar);
                         return new Token(operator, String.valueOf(currentChar), line, column);
                     } else if (currentChar == '=') {
-						if (peekChar() == '=') {
-							char nextChar = nextChar(); // Consuming the next '='
-							if (peekChar() == '=') {
-								nextChar();
-								throw new ScannerException("Unrecognized symbol \'" + currentChar + "\' at line " + line + ", column " + column);
-							}
-							
-							return new Token(TokenType.EQUALS,  String.valueOf(currentChar) + nextChar, line, column);
+                        if (peekChar() == '=') {
+                            char nextChar = nextChar(); // Consuming the next '='
+                            if (peekChar() == '=') {
+                                nextChar();
+                                throw new ScannerException("Unrecognized symbol \'" + currentChar + "\' at line " + line + ", column " + column);
+                            }
 
-						} else {
-							return new Token(TokenType.ASSIGN, String.valueOf(currentChar), line, column);
-						}
-						
+                            return new Token(TokenType.EQUALS,  String.valueOf(currentChar) + nextChar, line, column);
+
+                        } else {
+                            return new Token(TokenType.ASSIGN, String.valueOf(currentChar), line, column);
+                        }
+
                     } else if (currentChar == '>') {
-						if (peekChar() == '=') {
-							char nextChar = nextChar(); // Consuming the next '='
-							return new Token(TokenType.GREATER_EQUALS, String.valueOf(currentChar) + nextChar, line, column);
-						} else {
-							return new Token(TokenType.GREATER, String.valueOf(currentChar), line, column);
-						}
-					} else if(currentChar == '<') {
-						if (peekChar() == '=') {
-							char nextChar = nextChar(); // Consuming the next '='
-							return new Token(TokenType.LESS_EQUALS, String.valueOf(currentChar) + nextChar, line, column);
-						} else {
-							return new Token(TokenType.LESS, String.valueOf(currentChar), line, column);
-						}
-					} else if (currentChar == '!' && peekChar() == '=') {
-						char nextChar = nextChar(); // Consuming the next '='
-						return new Token(TokenType.DIF_OP, String.valueOf(currentChar) + nextChar, line, column);
-					} else if (currentChar == '(') {
+                        if (peekChar() == '=') {
+                            char nextChar = nextChar(); // Consuming the next '='
+                            return new Token(TokenType.GREATER_EQUALS, String.valueOf(currentChar) + nextChar, line, column);
+                        } else {
+                            return new Token(TokenType.GREATER, String.valueOf(currentChar), line, column);
+                        }
+                    } else if(currentChar == '<') {
+                        if (peekChar() == '=') {
+                            char nextChar = nextChar(); // Consuming the next '='
+                            return new Token(TokenType.LESS_EQUALS, String.valueOf(currentChar) + nextChar, line, column);
+                        } else {
+                            return new Token(TokenType.LESS, String.valueOf(currentChar), line, column);
+                        }
+                    } else if (currentChar == '!' && peekChar() == '=') {
+                        char nextChar = nextChar(); // Consuming the next '='
+                        return new Token(TokenType.DIF_OP, String.valueOf(currentChar) + nextChar, line, column);
+                    } else if (currentChar == '(') {
                         return new Token(TokenType.LEFT_PARENTHESIS, String.valueOf(currentChar), line, column);
                     } else if(currentChar == ')') {
-						return new Token(TokenType.RIGHT_PARENTHESIS, String.valueOf(currentChar), line, column);
-					} else if(isTwoPoints(currentChar)) {
+                        return new Token(TokenType.RIGHT_PARENTHESIS, String.valueOf(currentChar), line, column);
+                    } else if(isTwoPoints(currentChar)) {
                         return new Token(TokenType.TWO_POINTS, String.valueOf(currentChar), line, column);
                     } else if(isDelimeter(currentChar)) {
                         return new Token(TokenType.DELIM, String.valueOf(currentChar), line, column);
@@ -184,6 +184,20 @@ public class Scanner {
 
     private void back() {
         this.pos--;
+        // Ensure column and line are adjusted
+        if (pos > 0 && source_code[pos] == '\n') {
+            line--;
+            // reset column to the length of the previous line
+            column = 1;  // reset column and then find the last newline character
+            for (int i = pos - 2; i >= 0; i--) {
+                if (source_code[i] == '\n') {
+                    break;
+                }
+                column++;
+            }
+        } else {
+            column--;
+        }
     }
 
     private char peekChar() {
@@ -193,14 +207,19 @@ public class Scanner {
         return this.source_code[pos];
     }
 
-    private char nextChar() {
-        char currentChar = this.source_code[pos++];
+    private void incrementCounters(char currentChar) {
         if (currentChar == '\n') {
             line++;
             column = 1;
         } else {
             column++;
         }
+    }
+
+    private char nextChar() {
+        char currentChar = this.source_code[pos];
+        incrementCounters(currentChar);
+        pos++;  // Moving to the next character only after consuming the current one.
         return currentChar;
     }
 
@@ -224,19 +243,20 @@ public class Scanner {
         return currentChar == ';';
     }
 
-	private TokenType getOperator(char currentChar) {
-		if (currentChar == '+') {
-			return TokenType.SUM_OP;
-		} else if(currentChar == '-') {
-			return TokenType.SUB_OP;
-		} else if(currentChar == '*') {
-			return TokenType.MULT_OP;
-		} else  {
-			return TokenType.DIV_OP;
-		}
-	}
+    private TokenType getOperator(char currentChar) {
+        if (currentChar == '+') {
+            return TokenType.SUM_OP;
+        } else if(currentChar == '-') {
+            return TokenType.SUB_OP;
+        } else if(currentChar == '*') {
+            return TokenType.MULT_OP;
+        } else  {
+            return TokenType.DIV_OP;
+        }
+    }
 
     private boolean isLetter(char currentChar) {
         return (currentChar >= 'a' && currentChar <= 'z') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_';
     }
 }
+
