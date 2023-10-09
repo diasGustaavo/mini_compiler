@@ -21,11 +21,18 @@ public class Scanner {
 
     static {
         reservedWords = new HashMap<>();
-        reservedWords.put("int", TokenType.RESERVED_KEYWORD);
-        reservedWords.put("float", TokenType.RESERVED_KEYWORD);
-        reservedWords.put("print", TokenType.RESERVED_KEYWORD);
-        reservedWords.put("if", TokenType.RESERVED_KEYWORD);
-        reservedWords.put("else", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("INT", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("FLOAT", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("PRINT", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("IF", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("ELSE", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("STATEMENTS", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("ALGORITHM", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("THEN", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("BEGIN", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("END", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("INPUT", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("ASSIGN", TokenType.RESERVED_KEYWORD);
     }
 
     public Scanner(String filename) {
@@ -44,6 +51,7 @@ public class Scanner {
         char currentChar;
         String content = "";
         this.state = 0;
+        
         while (true) {
             if (isEOF()) {
                 return null;
