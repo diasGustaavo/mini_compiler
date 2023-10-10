@@ -33,6 +33,8 @@ public class Scanner {
         reservedWords.put("END", TokenType.RESERVED_KEYWORD);
         reservedWords.put("INPUT", TokenType.RESERVED_KEYWORD);
         reservedWords.put("ASSIGN", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("AND", TokenType.RESERVED_KEYWORD);
+        reservedWords.put("OR", TokenType.RESERVED_KEYWORD);
     }
 
     public Scanner(String filename) {
