@@ -1,4 +1,4 @@
-x2 soma SUBTRACAO
+x2 soma SUBTRACT
 a b c
 10 12 01 93.7 101.1 .2
 variableName

@@ -28,6 +28,3 @@ Eliminar recursividade direta à esquerda reescrevendo a regra 1
  
  
  
- 
- 
-	
